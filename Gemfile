@@ -29,14 +29,14 @@ gem 'active_model_serializers'
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 gem 'devise'
-gem 'rake', '< 11.0' # todo remove after rspec update
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
-  gem 'rspec-rails', '~> 2.14'
+  gem 'rspec-rails'
   gem 'factory_girl_rails'
   gem 'ffaker'
+  gem 'shoulda-matchers'
 end
 
 group :development do
