@@ -29,6 +29,7 @@ gem 'active_model_serializers', git: 'git@github.com:rails-api/active_model_seri
 # Use Capistrano for deployment
 # gem 'capistrano-rails', group: :development
 gem 'devise'
+gem 'kaminari'
 
 group :development, :test do
   gem 'pry-byebug'
