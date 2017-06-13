@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 describe Api::V1::UsersController do
-  before { request.headers['Accept'] = 'application/vnd.marketplace.v1' }
-
   describe 'GET #show' do
     before do
       @user = create :user
