@@ -2,7 +2,12 @@ class Api::V1::ProductsController < ApplicationController
   before_action :authenticate_with_token!, only: %i[create update]
 
   def index
-    render json: Product.all
+    products = if params[:product_ids].present?
+                 Product.find(params[:product_ids])
+               else
+                 Product.all
+               end
+    render json: products
   end
 
   def show
