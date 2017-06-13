@@ -31,4 +31,20 @@ describe Api::V1::SessionsController do
       end
     end
   end
+
+  describe "DELETE #destroy" do
+    before do
+      @user = create :user
+      @old_token = @user.auth_token
+      sign_in @user
+      delete :destroy, params: { id: @user.auth_token }
+    end
+
+    it { should respond_with 204 }
+
+    it "regenerates user.auth_token" do
+      @user.reload
+      expect(@user.auth_token).to_not eq @old_token
+    end
+  end
 end
