@@ -51,6 +51,7 @@ describe Api::V1::UsersController do
     context 'when is successfully updated' do
       before do
         @user = create :user
+        request.headers['Authorization'] =  @user.auth_token
         attrs = { id: @user.id, user: { email: 'newmail@example.com' } }
         patch :update, params: attrs
       end
@@ -85,6 +86,7 @@ describe Api::V1::UsersController do
   describe 'DELETE #destroy' do
     before do
       @user = create :user
+      request.headers['Authorization'] =  @user.auth_token
       delete :destroy, params: { id: @user.id }
     end
 
