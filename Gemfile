@@ -33,6 +33,7 @@ gem 'devise'
 group :development, :test do
   gem 'pry-byebug'
   gem 'rspec-rails'
+  gem 'awesome_print'
   gem 'spring-commands-rspec'
   gem 'factory_girl_rails'
   gem 'ffaker'
