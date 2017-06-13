@@ -1,8 +1,9 @@
 class Api::V1::UsersController < ApplicationController
   respond_to :json
+  before_action :set_user, only: :update
 
   def show
-    respond_with User.find(params[:id])
+    render json: User.find(params[:id])
   end
 
   def create
@@ -14,9 +15,21 @@ class Api::V1::UsersController < ApplicationController
     end
   end
 
+  def update
+    if @user.update(user_params)
+      render json: @user, status: 200, location: [:api, @user]
+    else
+      render json: { errors: @user.errors }, status: 422
+    end
+  end
+
   private
 
   def user_params
     params.require(:user).permit(:email, :password, :password_confirmation)
+  end
+
+  def set_user
+    @user = User.find(params[:id])
   end
 end
