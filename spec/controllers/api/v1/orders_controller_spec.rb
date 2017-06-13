@@ -31,4 +31,22 @@ RSpec.describe Api::V1::OrdersController, type: :controller do
       expect(order_response[:id]).to eql @order.id
     end
   end
+
+  describe 'POST #create' do
+    before do
+      current_user = create :user
+      request.headers['Authorization'] = current_user.auth_token
+      product1 = create :product
+      product2 = create :product
+      order_params = { product_ids: [product1.id, product2.id] }
+      post :create, params: { user_id: current_user.id, order: order_params }
+    end
+
+    it { should respond_with 201 }
+
+    it 'returns the just user order record' do
+      order_response = json_response[:order]
+      expect(order_response[:id]).to be_present
+    end
+  end
 end
