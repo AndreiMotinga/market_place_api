@@ -9,6 +9,7 @@ Rails.application.routes.draw do
           constraints: ApiConstraints.new(version: 1, default: true) do
 
       resources :users, only: %i[create show update destroy]
+      resources :sessions, only: %i[create destroy]
     end
   end
 
