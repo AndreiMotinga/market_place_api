@@ -20,7 +20,8 @@ RSpec.describe Api::V1::OrdersController, type: :controller do
     before do
       current_user = create :user
       request.headers["Authorization"] = current_user.auth_token
-      @order = create :order, user: current_user
+      @product = create :product
+      @order = create :order, user: current_user, product_ids: [@product.id]
       get :show, params: { user_id: current_user.id, id: @order.id }
     end
 
@@ -29,6 +30,16 @@ RSpec.describe Api::V1::OrdersController, type: :controller do
     it 'returns the user order record matching the id' do
       order_response = json_response[:order]
       expect(order_response[:id]).to eql @order.id
+    end
+
+    it 'includes the total for the order' do
+      order_response = json_response[:order]
+      expect(order_response[:total]).to eql @order.total.to_s
+    end
+
+    it 'includes the products on the order' do
+      order_response = json_response[:order]
+      expect(order_response[:products].size).to eq 1
     end
   end
 
@@ -49,4 +60,5 @@ RSpec.describe Api::V1::OrdersController, type: :controller do
       expect(order_response[:id]).to be_present
     end
   end
+
 end
