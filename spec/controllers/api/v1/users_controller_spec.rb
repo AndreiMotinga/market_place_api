@@ -89,4 +89,13 @@ describe Api::V1::UsersController do
       end
     end
   end
+
+  describe 'DELETE #destroy' do
+    before do
+      @user = create :user
+      delete :destroy, params: { id: @user.id }
+    end
+
+    it { should respond_with 204 }
+  end
 end

@@ -1,6 +1,6 @@
 class Api::V1::UsersController < ApplicationController
   respond_to :json
-  before_action :set_user, only: :update
+  before_action :set_user, only: [:update, :destroy]
 
   def show
     render json: User.find(params[:id])
@@ -21,6 +21,11 @@ class Api::V1::UsersController < ApplicationController
     else
       render json: { errors: @user.errors }, status: 422
     end
+  end
+
+  def destroy
+    @user.destroy
+    head 204
   end
 
   private
