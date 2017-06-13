@@ -23,7 +23,99 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
     it { should respond_with 200 }
 
     it 'returns 4 records from the database' do
-      expect(json_response[:products]).to have(4).items
+      expect(json_response[:products].size).to eq 4
     end
+  end
+
+  describe 'POST #create' do
+    context 'when is successfully created' do
+      before do
+        user = create :user
+        @product_attributes = attributes_for :product
+        request.headers['Authorization'] = user.auth_token
+        attrs = { user_id: user.id, product: @product_attributes }
+        post :create, params: attrs
+      end
+
+      it { should respond_with 201 }
+
+      it 'renders the json representation for the product record just created' do
+        expect(json_response[:title]).to eql @product_attributes[:title]
+      end
+    end
+
+    context 'when is not created' do
+      before do
+        user = create :user
+        @invalid_product_attributes = { title: 'Smart TV',
+                                        price: 'Twelve dollars' }
+        request.headers['Authorization'] = user.auth_token
+        attrs = { user_id: user.id, product: @invalid_product_attributes }
+        post :create, params: attrs
+      end
+
+      it { should respond_with 422 }
+
+      it 'renders an errors json' do
+        expect(json_response).to have_key(:errors)
+      end
+
+      it 'renders the json errors on whye the user could not be created' do
+        expect(json_response[:errors][:price]).to include 'is not a number'
+      end
+    end
+  end
+
+  describe 'PUT/PATCH #update' do
+    before do
+      @user = create :user
+      @product = create :product, user: @user
+      request.headers['Authorization'] = @user.auth_token
+    end
+
+    context 'when is successfully updated' do
+      before do
+        attrs = { user_id: @user.id,
+                  id: @product.id,
+                  product: { title: 'An expensive TV' } }
+        patch :update, params: attrs
+      end
+
+      it { should respond_with 200 }
+
+      it 'renders the json representation for the updated user' do
+        expect(json_response[:title]).to eql 'An expensive TV'
+      end
+    end
+
+    context 'when is not updated' do
+      before do
+        attrs = { user_id: @user.id,
+                  id: @product.id,
+                  product: { price: 'two hundred' } }
+        patch :update, params: attrs
+      end
+
+      it { should respond_with 422 }
+
+      it 'renders an errors json' do
+        expect(json_response).to have_key(:errors)
+      end
+
+      it 'renders the json errors on whye the user could not be created' do
+        expect(json_response[:errors][:price]).to include 'is not a number'
+      end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    before(:each) do
+      @user = FactoryGirl.create :user
+      @product = FactoryGirl.create :product, user: @user
+      request.headers['Authorization'] = @user.auth_token
+      delete :destroy, params: { user_id: @user.id, id: @product.id }
+    end
+
+    it { should respond_with 204 }
   end
 end
