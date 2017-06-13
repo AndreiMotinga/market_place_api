@@ -2,7 +2,7 @@ class Api::V1::ProductsController < ApplicationController
   before_action :authenticate_with_token!, only: %i[create update]
 
   def index
-    render json: { products: Product.all }
+    render json: Product.all
   end
 
   def show

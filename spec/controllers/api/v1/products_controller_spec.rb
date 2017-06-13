@@ -10,7 +10,12 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
     it { should respond_with 200 }
 
     it 'returns the information about a reporter on a hash' do
-      expect(json_response[:title]).to eql @product.title
+      expect(json_response[:product][:title]).to eql @product.title
+    end
+
+    it 'has the user as a embeded object' do
+      product_response = json_response[:product]
+      expect(product_response[:user][:email]).to eql @product.user.email
     end
   end
 
@@ -24,6 +29,13 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
 
     it 'returns 4 records from the database' do
       expect(json_response[:products].size).to eq 4
+    end
+
+    it 'returns the user object into each product' do
+      products_response = json_response[:products]
+      products_response.each do |product_response|
+        expect(product_response[:user]).to be_present
+      end
     end
   end
 
@@ -40,7 +52,7 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
       it { should respond_with 201 }
 
       it 'renders the json representation for the product record just created' do
-        expect(json_response[:title]).to eql @product_attributes[:title]
+        expect(json_response[:product][:title]).to eql @product_attributes[:title]
       end
     end
 
@@ -84,7 +96,7 @@ RSpec.describe Api::V1::ProductsController, type: :controller do
       it { should respond_with 200 }
 
       it 'renders the json representation for the updated user' do
-        expect(json_response[:title]).to eql 'An expensive TV'
+        expect(json_response[:product][:title]).to eql 'An expensive TV'
       end
     end
 
