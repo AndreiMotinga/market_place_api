@@ -35,6 +35,7 @@ describe Api::V1::UsersController do
 
     context 'when is not created' do
       before do
+
         invalid_user_attributes = { password: '12345678',
                                     password_confirmation: '12345678' }
         post :create, params: { user: invalid_user_attributes }
@@ -68,9 +69,10 @@ describe Api::V1::UsersController do
       end
     end
 
-    xcontext 'when is not created' do
+    context 'when is not updated' do
       before do
         @user = create :user
+        request.headers['Authorization'] = @user.auth_token
         invalid_attrs = { id: @user.id, user: { email: 'bademail.com' } }
         patch :update, params: invalid_attrs
       end
